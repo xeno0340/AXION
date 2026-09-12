@@ -18,3 +18,8 @@ Thumbs.db
 # Logs, just in case anything starts writing them later
 *.log
 npm-debug.log*
+
+# Local documents — not part of the codebase
+AXION_Project_Proposal.pdf
+The_Password_Problem_RGA.docx
+The_Password_Problem_RGA.pdf
