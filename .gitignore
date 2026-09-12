@@ -1,0 +1,20 @@
+# Dependencies — reinstalled from package.json, never committed
+**/node_modules/
+
+# Secrets — these hold your OPAQUE server setup and DB password.
+# If either of these ever gets pushed, treat the secrets inside as
+# burned and regenerate them, even if you delete the commit later.
+**/.env
+
+# The Kali VM itself — multiple GB, and GitHub flatly refuses files
+# over 100MB anyway. This lab lives on your machine only.
+lab/
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs, just in case anything starts writing them later
+*.log
+npm-debug.log*

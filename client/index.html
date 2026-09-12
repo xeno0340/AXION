@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>AXION — Test Client</title>
+</head>
+<body>
+  <h2>Register</h2>
+  <input id="reg-username" placeholder="username" />
+  <input id="reg-password" placeholder="password" type="password" />
+  <button onclick="register()">Register</button>
+
+  <h2>Login</h2>
+  <input id="login-username" placeholder="username" />
+  <input id="login-password" placeholder="password" type="password" />
+  <button onclick="login()">Login</button>
+
+  <pre id="log"></pre>
+
+  <script type="module">
+    import * as opaque from "https://esm.sh/@serenity-kit/opaque";
+
+    const log = (msg) => {
+      document.getElementById("log").textContent += msg + "\n";
+    };
+
+    await opaque.ready;
+
+    window.register = async () => {
+      const username = document.getElementById("reg-username").value;
+      const password = document.getElementById("reg-password").value;
+
+      const { clientRegistrationState, registrationRequest } =
+        opaque.client.startRegistration({ password });
+
+      const startRes = await fetch("http://localhost:3000/register/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, registrationRequest }),
+      }).then((r) => r.json());
+
+      const { registrationRecord } = opaque.client.finishRegistration({
+        clientRegistrationState,
+        registrationResponse: startRes.registrationResponse,
+        password,
+      });
+
+      const finishRes = await fetch("http://localhost:3000/register/finish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, registrationRecord }),
+      }).then((r) => r.json());
+
+      log("Register result: " + JSON.stringify(finishRes));
+    };
+
+    window.login = async () => {
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+
+      const { clientLoginState, startLoginRequest } =
+        opaque.client.startLogin({ password });
+
+      const startRes = await fetch("http://localhost:3000/login/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, startLoginRequest }),
+      }).then((r) => r.json());
+
+      const loginResult = opaque.client.finishLogin({
+        clientLoginState,
+        loginResponse: startRes.loginResponse,
+        password,
+      });
+
+      if (!loginResult) {
+        log("Login failed client-side — wrong password.");
+        return;
+      }
+
+      const finishRes = await fetch("http://localhost:3000/login/finish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, finishLoginRequest: loginResult.finishLoginRequest }),
+      }).then((r) => r.json());
+
+      log("Login result: " + JSON.stringify(finishRes));
+      log("Session key (client-side, never sent to server): " + loginResult.sessionKey);
+    };
+  </script>
+</body>
+</html>
