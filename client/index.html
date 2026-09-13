@@ -33,7 +33,7 @@
       const { clientRegistrationState, registrationRequest } =
         opaque.client.startRegistration({ password });
 
-      const startRes = await fetch("http://localhost:3000/register/start", {
+      const startRes = await fetch("http://10.10.10.30:3000/register/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, registrationRequest }),
@@ -45,7 +45,7 @@
         password,
       });
 
-      const finishRes = await fetch("http://localhost:3000/register/finish", {
+      const finishRes = await fetch("http://10.10.10.30:3000/register/finish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, registrationRecord }),
@@ -61,7 +61,7 @@
       const { clientLoginState, startLoginRequest } =
         opaque.client.startLogin({ password });
 
-      const startRes = await fetch("http://localhost:3000/login/start", {
+      const startRes = await fetch("http://10.10.10.30:3000/login/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, startLoginRequest }),
@@ -78,7 +78,7 @@
         return;
       }
 
-      const finishRes = await fetch("http://localhost:3000/login/finish", {
+      const finishRes = await fetch("http://10.10.10.30:3000/login/finish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, finishLoginRequest: loginResult.finishLoginRequest }),
